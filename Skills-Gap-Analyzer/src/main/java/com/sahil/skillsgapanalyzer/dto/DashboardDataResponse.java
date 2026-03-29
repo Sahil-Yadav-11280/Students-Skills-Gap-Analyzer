@@ -28,8 +28,8 @@ public class DashboardDataResponse {
     }
 
     public static class ActionableInsights{
-        public List<String> workSkillsList;
-        public List<String> stringSkillsList;
+        public List<String> weakSkillsList;
+        public List<String> strongSkillsList;
         public String learningPathRecommendation;
         public String performancePrediction;
     }
