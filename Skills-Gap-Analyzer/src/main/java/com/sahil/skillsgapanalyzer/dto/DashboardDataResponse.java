@@ -15,6 +15,7 @@ public class DashboardDataResponse {
     private ActionableInsights insights;
 
     public static class StudentProfile{
+        public String studentName;
         public Integer totalAttempts;
         public String avgAccuracy;
         public String recentAccuracy;

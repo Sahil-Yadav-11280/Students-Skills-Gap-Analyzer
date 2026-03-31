@@ -127,6 +127,7 @@ public class DashboardService {
         DashboardDataResponse finalResponse = new DashboardDataResponse();
 
         DashboardDataResponse.StudentProfile profile = new DashboardDataResponse.StudentProfile();
+        profile.studentName = student.getName() != null ? student.getName() : "Unknown Student";
         profile.totalAttempts = totalAttempts;
         profile.avgAccuracy = String.format("%.1f%%" , overallAccuracy*100);
         profile.recentAccuracy = String.format("%.1f%%" , recentAccuracy*100);

@@ -20,6 +20,9 @@ public class Student {
     @Column(name = "student_id")
     private double id;
 
+    @Column()
+    private String name;
+
     @OneToMany(mappedBy = "student" , cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<StudentAttempt> attempts;
 
