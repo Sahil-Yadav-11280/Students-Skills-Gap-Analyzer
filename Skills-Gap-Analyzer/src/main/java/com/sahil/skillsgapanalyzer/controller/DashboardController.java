@@ -74,4 +74,25 @@ public class DashboardController {
             return org.springframework.http.ResponseEntity.badRequest().body("Error exporting data: " + e.getMessage());
         }
     }
+
+
+    // Get the raw history to populate the frontend table
+    @GetMapping("/student/{studentId}/history")
+    public ResponseEntity<?> getStudentHistory(@PathVariable Long studentId) {
+        try {
+            return ResponseEntity.ok(dashboardService.getStudentRawHistory(studentId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching history: " + e.getMessage());
+        }
+    }
+
+    // Update a specific row in the history
+    @PutMapping("/attempt/{attemptId}")
+    public ResponseEntity<?> editAttempt(@PathVariable Long attemptId, @RequestBody com.sahil.skillsgapanalyzer.dto.StudentAttemptDto updatedData) {
+        try {
+            return ResponseEntity.ok(dashboardService.updateStudentAttempt(attemptId, updatedData));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating attempt: " + e.getMessage());
+        }
+    }
 }

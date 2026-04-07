@@ -308,4 +308,51 @@ public class DashboardService {
 
         return new StudentSummaryDto(savedStudent.getId() , savedStudent.getName() , code , 0);
     }
+
+
+    // ==========================================
+    // FEATURE: Edit Student History
+    // ==========================================
+
+    // 1. Fetch the raw history for the Edit Table
+    public List<StudentAttemptDto> getStudentRawHistory(Long studentId) {
+        List<StudentAttempt> history = studentAttemptRepository.findByStudent_IdOrderByActionNumAsc(studentId);
+
+        // Convert Entities to DTOs
+        return history.stream().map(attempt -> new StudentAttemptDto(
+                attempt.getId(),
+                attempt.getSkill(),
+                attempt.getCorrect(),
+                attempt.getActionNum(),
+                attempt.getHintCount(),
+                attempt.getTimeTaken()
+        )).collect(Collectors.toList());
+    }
+
+    // 2. Update a specific attempt
+    public StudentAttemptDto updateStudentAttempt(Long attemptId, StudentAttemptDto updatedData) {
+        // Find the existing attempt in the database
+        StudentAttempt existingAttempt = studentAttemptRepository.findById(attemptId)
+                .orElseThrow(() -> new RuntimeException("Attempt with ID " + attemptId + " not found!"));
+
+        // Update the fields (Teacher might change it from Wrong (0) to Right (1))
+        existingAttempt.setCorrect(updatedData.getCorrect());
+        existingAttempt.setSkill(updatedData.getSkill());
+        existingAttempt.setHintCount(updatedData.getHintCount());
+        existingAttempt.setTimeTaken(updatedData.getTimeTaken());
+        // Note: We usually don't change the actionNum so it stays in chronological order
+
+        // Save back to database
+        StudentAttempt saved = studentAttemptRepository.save(existingAttempt);
+
+        // Return the updated DTO to the frontend
+        return new StudentAttemptDto(
+                saved.getId(),
+                saved.getSkill(),
+                saved.getCorrect(),
+                saved.getActionNum(),
+                saved.getHintCount(),
+                saved.getTimeTaken()
+        );
+    }
 }
