@@ -2,3 +2,4 @@ student_log_*.csv
 training_label.csv
 validation_test_label.csv
 skill_encoder.joblib
+dkt_model_weights.pth
