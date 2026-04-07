@@ -95,4 +95,16 @@ public class DashboardController {
             return ResponseEntity.badRequest().body("Error updating attempt: " + e.getMessage());
         }
     }
+
+    // Add a brand-new attempt for a student
+    @PostMapping("/student/{studentId}/attempt")
+    public ResponseEntity<?> addNewAttempt(
+            @PathVariable Long studentId,
+            @RequestBody com.sahil.skillsgapanalyzer.dto.StudentAttemptDto newData) {
+        try {
+            return ResponseEntity.ok(dashboardService.addStudentAttempt(studentId, newData));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error adding new attempt: " + e.getMessage());
+        }
+    }
 }

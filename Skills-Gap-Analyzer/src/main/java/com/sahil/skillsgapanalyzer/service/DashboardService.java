@@ -7,6 +7,7 @@ import com.sahil.skillsgapanalyzer.entity.StudentAttempt;
 import com.sahil.skillsgapanalyzer.integration.MlPredictionClient;
 import com.sahil.skillsgapanalyzer.repository.StudentAttemptRepository;
 import com.sahil.skillsgapanalyzer.repository.StudentRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -354,5 +355,50 @@ public class DashboardService {
                 saved.getHintCount(),
                 saved.getTimeTaken()
         );
+    }
+
+    // ==========================================
+    // FEATURE: Add a BRAND NEW Attempt
+    // ==========================================
+    public StudentAttemptDto addStudentAttempt(Long studentId, StudentAttemptDto newData) {
+        // 1. Verify the student exists
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student with ID " + studentId + " not found!"));
+
+        // 2. Find the next chronological action number
+        List<StudentAttempt> history = studentAttemptRepository.findByStudent_IdOrderByActionNumAsc(studentId);
+        StudentAttempt newAttempt = getStudentAttempt(newData, history, student);
+
+        // 4. Save to the database
+        StudentAttempt saved = studentAttemptRepository.save(newAttempt);
+
+        // 5. Return the new DTO (now containing the auto-generated database ID)
+        return new StudentAttemptDto(
+                saved.getId(),
+                saved.getSkill(),
+                saved.getCorrect(),
+                saved.getActionNum(),
+                saved.getHintCount(),
+                saved.getTimeTaken()
+        );
+    }
+
+    private static @NonNull StudentAttempt getStudentAttempt(StudentAttemptDto newData, List<StudentAttempt> history, Student student) {
+        long nextActionNum = 1L; // Default if they have zero history
+        if (!history.isEmpty()) {
+            nextActionNum = history.get(history.size() - 1).getActionNum() + 1;
+        }
+
+        // 3. Create the new entity
+        StudentAttempt newAttempt = new StudentAttempt();
+        newAttempt.setStudent(student);
+        newAttempt.setSkill(newData.getSkill());
+        newAttempt.setCorrect(newData.getCorrect());
+        newAttempt.setActionNum(nextActionNum);
+
+        // Use defaults if hints/time aren't provided
+        newAttempt.setHintCount(newData.getHintCount() != null ? newData.getHintCount() : 0);
+        newAttempt.setTimeTaken(newData.getTimeTaken() != null ? newData.getTimeTaken() : 0.0);
+        return newAttempt;
     }
 }
