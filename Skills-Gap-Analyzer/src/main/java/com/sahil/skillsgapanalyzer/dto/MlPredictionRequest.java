@@ -1,13 +1,13 @@
 package com.sahil.skillsgapanalyzer.dto;
 
 
+import lombok.AllArgsConstructor;
+
+import java.util.List;
+
 //What springboot sends to Flask
+@AllArgsConstructor
 public class MlPredictionRequest {
-    public Integer skill_attempts;
-    public Double skill_accuracy;
-    public Integer total_attempts;
-    public Double overall_accuracy;
-    public Double recent_accuracy;
-    public Integer hintCount;
-    public Double timeTaken;
+    public List<Integer> skills;
+    public List<Integer> corrects;
 }
