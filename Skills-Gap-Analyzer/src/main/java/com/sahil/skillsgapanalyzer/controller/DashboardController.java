@@ -51,4 +51,27 @@ public class DashboardController {
             return ResponseEntity.badRequest().body("Error adding student: " + e.getMessage());
         }
     }
+
+    @GetMapping("/student/{studentId}/export")
+    public ResponseEntity<?> exportStudentDashboard(@PathVariable Long studentId) {
+        try {
+            // 1. Fetch the exact same data we use for the dashboard
+            Object dashboardData = dashboardService.getStudentDashboard(studentId);
+
+            // 2. Set headers to tell the browser this is a file download
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.add(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=student_" + studentId + "_analysis.json");
+            headers.add(org.springframework.http.HttpHeaders.CONTENT_TYPE,
+                    org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
+
+            // 3. Return the data with the attachment headers
+            return org.springframework.http.ResponseEntity.ok()
+                    .headers(headers)
+                    .body(dashboardData);
+
+        } catch (Exception e) {
+            return org.springframework.http.ResponseEntity.badRequest().body("Error exporting data: " + e.getMessage());
+        }
+    }
 }
