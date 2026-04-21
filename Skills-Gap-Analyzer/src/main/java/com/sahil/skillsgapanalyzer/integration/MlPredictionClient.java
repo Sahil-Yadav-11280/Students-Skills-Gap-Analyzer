@@ -33,9 +33,15 @@ public class MlPredictionClient {
 
             MLPredictionResponse fallback = new MLPredictionResponse();
             fallback.api_status = "error";
-            fallback.skills_data = new HashMap<>();   // ✅ FIX
+            fallback.skills_data = new HashMap<>();
 
             return fallback;
         }
     }
 }
+
+
+
+
+
+
